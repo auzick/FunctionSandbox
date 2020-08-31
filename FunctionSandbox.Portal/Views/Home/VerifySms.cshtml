@@ -1,0 +1,23 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Thanks</h1>
+    <p>You verified your phone number. Please check your email.</p>
+    <hr/>
+    <p></p>
+    <p></p>
+    <p></p>
+    <p style="font-size:-1;">
+        Result: 
+        <br/>
+        @ViewBag.url 
+        <br/>
+        @ViewBag.resultCode 
+        <br/>
+        @ViewBag.resultPhrase
+        <br/>
+        @ViewBag.content
+    </p>
+</div>

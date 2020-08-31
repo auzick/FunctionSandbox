@@ -1,0 +1,41 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+@section Scripts
+{
+<script type="text/javascript">
+function fEvent(url, data) {
+    $.ajax({
+        url:url,
+        type:"POST",
+        data:data,
+        contentType:"application/json; charset=utf-8",
+        dataType:"json",
+        success: function(){
+            alert("Event sent.");
+            location.reload();
+        }
+    })    
+}
+</script>
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <table class="monitor">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Email Verified</th>
+                <th>Phone</th>
+                <th>Phone Verified</th>
+                <th>Current state</th>
+                <th>Runtime status</th>
+            </tr>
+        </thead>
+        <tbody>
+        @Html.Raw(ViewBag.rows)
+        </tbody>
+    </table>
+</div>

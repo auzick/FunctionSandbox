@@ -1,0 +1,16 @@
+{
+    "version": "2.0",
+    "logging": {
+        "includeScopes": true,
+        "logLevel": {
+            "default": "Information",
+            "Host.Triggers.DurableTask": "Information"
+        },
+        "applicationInsights": {
+            "samplingSettings": {
+                "isEnabled": true,
+                "maxTelemetryItemsPerSecond": 20
+            }
+        }
+    }
+}

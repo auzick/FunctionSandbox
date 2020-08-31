@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="Index">
+    <table>
+        <tr>
+            <td>UserName:</td>
+            <td><input type="text" id="txtUserName" name="userName"/></td>
+        </tr>
+        <tr>
+            <td>Email:</td>
+            <td><input type="text" id="txtUserEmail" name="userEmail"/></td>
+        </tr>
+        <tr>
+            <td>Phone:</td>
+            <td><input type="text" id="txtUserPhone" name="userPhone"/></td>
+        </tr>
+        <tr>
+            <td>Password:</td>
+            <td><input type="text" id="txtUserPassword" name="userPassword"/></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><input type="submit" value="Submit"/></td>
+            </tr>
+        </table>
+    </form>
+</div>
