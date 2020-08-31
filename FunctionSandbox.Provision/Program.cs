@@ -68,7 +68,8 @@ namespace Provision
 
         private static void WriteConfigs(ProvisionAzure provisioner)
         {
-            var solutionDir = Directory.GetParent(Directory.GetCurrentDirectory());
+            //var solutionDir = Directory.GetParent(Directory.GetCurrentDirectory());
+            var solutionDir = Directory.GetCurrentDirectory();
 
             var pDir = Path.Combine(solutionDir.ToString(), "FunctionSandbox.Portal");
             if (!Directory.Exists(pDir))
