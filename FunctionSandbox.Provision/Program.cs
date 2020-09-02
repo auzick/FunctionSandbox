@@ -111,7 +111,7 @@ namespace Provision
                 config.Values.AzureStorage = provisioner.AppDataStorageAccount.GetConnectionString();
                 config.Values.TwilioAccountSid = _settings.TwilioAccountSid;
                 config.Values.TwilioAuthToken = _settings.TwilioAuthToken;
-                config.Values.TwilioFromNumbe = _settings.TwilioFromNumber;
+                config.Values.TwilioFromNumber = _settings.TwilioFromNumber;
                 config.Values.SmsVerifyUrl = $"https://{provisioner.WebAppHostName}/VerifySms/{{0}}";
                 config.Values.SENDGRIP_API_KEY = _settings.SendgridApiKey;
                 config.Values.EmailFromAddress = _settings.EmailFromAddress;
