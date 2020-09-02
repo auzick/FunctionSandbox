@@ -78,18 +78,19 @@ namespace Provision
             }
             else
             {
-                var pConfigFile = Path.Combine(pDir, "appsettings.Development.json");
-                dynamic pConfig = new JObject();
-                if (File.Exists(pConfigFile))
+                var configFile = Path.Combine(pDir, "appsettings.Development.json");
+                dynamic config = new JObject();
+                if (File.Exists(configFile))
                 {
-                    pConfig = JsonConvert.DeserializeObject(File.ReadAllText(pConfigFile));
+                    config = JsonConvert.DeserializeObject(File.ReadAllText(configFile));
                 }
-                pConfig.APPINSIGHTS_INSTRUMENTATIONKEY = provisioner.FunctionAppInsights.Properties.InstrumentationKey;
-                pConfig.AzureStorage = provisioner.AppDataStorageAccount.GetConnectionString();
-                pConfig.FunctionsHostname = provisioner.FunctionAppHostName;
-                var updatedSettings = JsonConvert.SerializeObject(pConfig, Formatting.Indented);
-                File.WriteAllText(pConfigFile, updatedSettings);
-                Console.WriteLine($"Wrote portal config to '{pConfigFile}'");
+                config.APPINSIGHTS_INSTRUMENTATIONKEY = provisioner.FunctionAppInsights.Properties.InstrumentationKey;
+                config.AzureStorage = provisioner.AppDataStorageAccount.GetConnectionString();
+                config.FunctionsHostname = provisioner.FunctionAppHostName;
+                config.RegisterFunctionUrl = provisioner.RegisterFunctionUrl;
+                var updatedSettings = JsonConvert.SerializeObject(config, Formatting.Indented);
+                File.WriteAllText(configFile, updatedSettings);
+                Console.WriteLine($"Wrote portal config to '{configFile}'");
             }
 
             var fDir = Path.Combine(solutionDir.ToString(), "FunctionSandbox.Functions");
@@ -99,25 +100,25 @@ namespace Provision
             }
             else
             {
-                var fConfigFile = Path.Combine(fDir, "local.settings.json");
-                dynamic fConfig = new JObject();
-                if (File.Exists(fConfigFile))
+                var configFile = Path.Combine(fDir, "local.settings.json");
+                dynamic config = new JObject();
+                if (File.Exists(configFile))
                 {
-                    fConfig = JsonConvert.DeserializeObject(File.ReadAllText(fConfigFile));
+                    config = JsonConvert.DeserializeObject(File.ReadAllText(configFile));
                 }
-                fConfig.Values.AzureWebJobsStorage = provisioner.FunctionStorageAccount.GetConnectionString();
-                fConfig.Values.APPINSIGHTS_INSTRUMENTATIONKEY = provisioner.FunctionAppInsights.Properties.InstrumentationKey;
-                fConfig.Values.AzureStorage = provisioner.AppDataStorageAccount.GetConnectionString();
-                fConfig.Values.TwilioAccountSid = _settings.TwilioAccountSid;
-                fConfig.Values.TwilioAuthToken = _settings.TwilioAuthToken;
-                fConfig.Values.TwilioFromNumbe = _settings.TwilioFromNumber;
-                fConfig.Values.SmsVerifyUrl = $"https://{provisioner.WebAppHostName}/VerifySms/{{0}}";
-                fConfig.Values.SENDGRIP_API_KEY = _settings.SendgridApiKey;
-                fConfig.Values.EmailFromAddress = _settings.EmailFromAddress;
-                fConfig.Values.EmailVerifyUrl = $"https://{provisioner.WebAppHostName}/VerifyEmail/{{0}}";
-                var updatedSettings = JsonConvert.SerializeObject(fConfig, Formatting.Indented);
-                File.WriteAllText(fConfigFile, updatedSettings);
-                Console.WriteLine($"Wrote function app config to '{fConfigFile}'");
+                config.Values.AzureWebJobsStorage = provisioner.FunctionStorageAccount.GetConnectionString();
+                config.Values.APPINSIGHTS_INSTRUMENTATIONKEY = provisioner.FunctionAppInsights.Properties.InstrumentationKey;
+                config.Values.AzureStorage = provisioner.AppDataStorageAccount.GetConnectionString();
+                config.Values.TwilioAccountSid = _settings.TwilioAccountSid;
+                config.Values.TwilioAuthToken = _settings.TwilioAuthToken;
+                config.Values.TwilioFromNumbe = _settings.TwilioFromNumber;
+                config.Values.SmsVerifyUrl = $"https://{provisioner.WebAppHostName}/VerifySms/{{0}}";
+                config.Values.SENDGRIP_API_KEY = _settings.SendgridApiKey;
+                config.Values.EmailFromAddress = _settings.EmailFromAddress;
+                config.Values.EmailVerifyUrl = $"https://{provisioner.WebAppHostName}/VerifyEmail/{{0}}";
+                var updatedSettings = JsonConvert.SerializeObject(config, Formatting.Indented);
+                File.WriteAllText(configFile, updatedSettings);
+                Console.WriteLine($"Wrote function app config to '{configFile}'");
             }
 
 

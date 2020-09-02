@@ -18,21 +18,32 @@
 		{
 			"label": "build",
 			"command": "dotnet",
+			"type": "process",
 			"args": [
 				"build",
 				"/property:GenerateFullPaths=true",
-				"/consoleloggerparameters:NoSummary"
+				"/consoleloggerparameters:NoSummary",
+				"${workspaceFolder}"
 			],
-			"type": "process",
-			"dependsOn": "clean functions",
+			"dependsOn": "clean",
 			"group": {
 				"kind": "build",
 				"isDefault": true
 			},
-			"problemMatcher": "$msCompile",
-			"options": {
-				"cwd": "${workspaceFolder}/FunctionSandbox.Functions"
-			}
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "clean",
+			"command": "dotnet",
+			"args": [
+				"clean",
+				"--configuration",
+				"Debug",
+				"/property:GenerateFullPaths=true",
+				"/consoleloggerparameters:NoSummary"
+			],
+			"type": "process",
+			"problemMatcher": "$msCompile"
 		},
 		{
 			"label": "clean functions release",

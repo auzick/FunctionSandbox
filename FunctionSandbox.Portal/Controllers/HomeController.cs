@@ -49,8 +49,8 @@ namespace Andy.Portal.Controllers
                 UserPassword = userPassword
             };
             var cl = clientFactory.CreateClient();
-            var url = $"https://{config["FunctionsHostname"]}/api/register/?code=OaOwQ1g52wM3nckgrlKWiXawtkKp14mmyX0zUKZndxnyg/D1YOpPQw==";
-            var result = await cl.PostAsJsonAsync(url, registration);
+            // RegisterFunctionUrl
+            var result = await cl.PostAsJsonAsync(config["RegisterFunctionUrl"], registration);
             var content = await result.Content.ReadAsStringAsync();
             var json = JsonSerializer.Deserialize<object>(content);
             var opt = new JsonSerializerOptions() { WriteIndented = true };

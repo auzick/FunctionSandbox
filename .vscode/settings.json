@@ -3,5 +3,7 @@
     "azureFunctions.projectLanguage": "C#",
     "azureFunctions.projectRuntime": "~3",
     "debug.internalConsoleOptions": "neverOpen",
-    "azureFunctions.preDeployTask": "publish"
+    "azureFunctions.preDeployTask": "publish",
+    "appService.defaultWebAppToDeploy": "/subscriptions/dae3ebd6-2090-4503-ab21-333d3bc32c24/resourceGroups/autest-a/providers/Microsoft.Web/sites/autest-a-portal",
+    "appService.deploySubpath": "FunctionSandbox.Portal\\publish"
 }
