@@ -29,6 +29,14 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
+- task: AzureFileCopy@4
+  inputs:
+    SourcePath: '$(build.artifactStagingDirectory)\WebApp.zip'
+    Destination: 'AzureBlob'
+    storage: 'functionsandboxrepo'
+    ContainerName: 'deploy'
+    BlobPrefix: 'webapp'
+
 - task: VSTest@2
   inputs:
     platform: '$(buildPlatform)'
