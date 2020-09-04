@@ -163,15 +163,23 @@ namespace Provision
                     .Create();
                 Console.WriteLine("done");
 
+
                 // Programatically deploy the webapp !!!!
                 // https://stackoverflow.com/questions/45034054/deploy-azure-function-from-code-c
-                // dotnet publish blah blah
-                // zip it somehow
-                // WebApp.Deploy().WithPackageUri().Execute();
+                // https://blog.dangl.me/archive/deploy-to-azure-app-service-with-no-downtime-by-using-staging-slots/
+                // https://gist.github.com/GeorgDangl/aac6b7ea1ce3fd578fc8bddc4de199ec
+                // 1. dotnet publish blah blah 
+                //      (How to do this from code???? Doesn't seem possible from Microsoft.Build.Evaluation or Microsoft.Build.Execution)
+                // 2. zip it somehow (System.IO.Compression.ZipFile?)
+                // 3. Deploy:
+                //      Maybe use WebApp.Deploy().WithPackageUri().Execute();
+                //      Since we've already created a storage account, we could shove the zip in a container there.
+                //      Or, maybe just deploy as a zip file. See https://docs.microsoft.com/en-us/azure/app-service/deploy-zip
+                //      Loops like you can post the zip to https://<app_name>.scm.azurewebsites.net/api/zipdeploy.
                 // Then create a access key at the start of this logic (commented out), use that key to form
-                // the register api url, and add it when the WebApp is created intead of the code below 
+                // the register api url and add it when the WebApp is created intead of the code farther down 
                 // ("Updating WebApp settings..."). It must also be added to the function app with .AddFunctionKey()
-                // Should also programatically deploy the function app.
+                // Should also programatically deploy the function app just to be complete.
 
                 // Install the app insites extension                
                 // Not sure this is needed. 

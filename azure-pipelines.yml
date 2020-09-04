@@ -11,6 +11,7 @@ pool:
 
 variables:
   solution: '**/*.sln'
+  portalProj: '**/FunctionSandbox.Portal/FunctionSandbox.Portal.csproj'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
@@ -23,7 +24,7 @@ steps:
 
 - task: VSBuild@1
   inputs:
-    solution: '$(solution)'
+    solution: '$(portalProj)'
     msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
