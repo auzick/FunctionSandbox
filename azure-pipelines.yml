@@ -31,7 +31,6 @@ steps:
     publishWebProjects: false
     configuration: Release
     zipAfterPublish: true
-    workingDirectory: '$(portalProj)'
     projects: '($functionsProj)'
     modifyOutputPath: true
 
