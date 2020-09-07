@@ -56,8 +56,6 @@ namespace Provision
             var logger = _serviceProvider.GetService<ILoggerFactory>()
                 .CreateLogger<Program>();
 
-            BuildPackages();
-
             var provisioner = _serviceProvider.GetService<IProvisionAzure>()
                 .WithName(_settings.ResourceGroupName)
                 .WithDefaults()
@@ -73,38 +71,38 @@ namespace Provision
 
         // https://dotnet.microsoft.com/download/dotnet-core/3.1
         // https://docs.microsoft.com/en-us/visualstudio/msbuild/how-to-use-project-sdk?view=vs-2019
-        private static void BuildPackages()
-        {
-            var solutionDir = Directory.GetCurrentDirectory();
+        // private static void BuildPackages()
+        // {
+        //     var solutionDir = Directory.GetCurrentDirectory();
 
-            var pDir = Path.Combine(solutionDir.ToString(), "FunctionSandbox.Portal");
-            if (!Directory.Exists(pDir))
-            {
-                ConsoleColor.Red.WriteLine($"Cannot build packages. The directory '{pDir}' does not exist.");
-                return;
-            }
-            var portalResult = BuildPackage(
-                Path.Combine(pDir, "FunctionSandbox.Portal.csproj"),
-                Path.Combine(pDir, "packages", "package.zip")
-            );
-        }
+        //     var pDir = Path.Combine(solutionDir.ToString(), "FunctionSandbox.Portal");
+        //     if (!Directory.Exists(pDir))
+        //     {
+        //         ConsoleColor.Red.WriteLine($"Cannot build packages. The directory '{pDir}' does not exist.");
+        //         return;
+        //     }
+        //     var portalResult = BuildPackage(
+        //         Path.Combine(pDir, "FunctionSandbox.Portal.csproj"),
+        //         Path.Combine(pDir, "packages", "package.zip")
+        //     );
+        // }
 
-        private static BuildResult BuildPackage(string projectPath, string outputPath)
-        {
-            string projectFileName = projectPath;
-            ProjectCollection pc = new ProjectCollection();
-            Dictionary<string, string> props = new Dictionary<string, string>();
-            props.Add("Configuration", "release");
-            props.Add("Platform", "any cpu");
-            props.Add("WebPublishMethod", "Package");
-            props.Add("PackageAsSingleFile", "true");
-            props.Add("PackageLocation", outputPath);
-            props.Add("PackageFileName", outputPath);
-            props.Add("DeployOnBuild", "true");
-            props.Add("DeployTarget", "Package");
-            BuildRequestData reqData = new BuildRequestData(projectFileName, props, null, new string[] { "Build" }, null);
-            return BuildManager.DefaultBuildManager.Build(new BuildParameters(pc), reqData);
-        }
+        // private static BuildResult BuildPackage(string projectPath, string outputPath)
+        // {
+        //     string projectFileName = projectPath;
+        //     ProjectCollection pc = new ProjectCollection();
+        //     Dictionary<string, string> props = new Dictionary<string, string>();
+        //     props.Add("Configuration", "release");
+        //     props.Add("Platform", "any cpu");
+        //     props.Add("WebPublishMethod", "Package");
+        //     props.Add("PackageAsSingleFile", "true");
+        //     props.Add("PackageLocation", outputPath);
+        //     props.Add("PackageFileName", outputPath);
+        //     props.Add("DeployOnBuild", "true");
+        //     props.Add("DeployTarget", "Package");
+        //     BuildRequestData reqData = new BuildRequestData(projectFileName, props, null, new string[] { "Build" }, null);
+        //     return BuildManager.DefaultBuildManager.Build(new BuildParameters(pc), reqData);
+        // }
 
         private static void WriteConfigs(ProvisionAzure provisioner)
         {
@@ -160,7 +158,6 @@ namespace Provision
                 File.WriteAllText(configFile, updatedSettings);
                 Console.WriteLine($"Wrote function app config to '{configFile}'");
             }
-
 
         }
 

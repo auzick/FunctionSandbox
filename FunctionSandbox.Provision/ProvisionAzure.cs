@@ -101,14 +101,16 @@ namespace Provision
 
             Console.WriteLine($"Creating Azure resources");
 
-            // TODO not using this yet.
-            // Generate the key we'll use to build the function urls.
-            // var key = new byte[32];
-            // using (var generator = RandomNumberGenerator.Create())
-            // {
-            //     generator.GetBytes(key);
-            // }
-            // string functionApiKey = Convert.ToBase64String(key);
+            //Generate the key we'll use to build the function urls.
+            var key = new byte[32];
+            using (var generator = RandomNumberGenerator.Create())
+            {
+                generator.GetBytes(key);
+            }
+            string functionApiKey = Convert.ToBase64String(key);
+
+            // https://autest-x-functions.azurewebsites.net
+            RegisterFunctionUrl = $"https://{Name}-functions/api/register/?code={functionApiKey}";
 
             Console.Write($"Creating resource group '{Name}'... ");
             ResourceGroup = azure.ResourceGroups
@@ -160,28 +162,17 @@ namespace Provision
                     .WithTags(CommonTags)
                     .WithAppSetting("APPINSIGHTS_INSTRUMENTATIONKEY", WebAppInsights.Properties.InstrumentationKey)
                     .WithAppSetting("AzureStorage", AppDataStorageAccount.GetConnectionString())
+                    .WithAppSetting("ASPNETCORE_ENVIRONMENT", "DEBUG")
+                    // The URL of the function that kicks off the registration process.
+                    .WithAppSetting("RegisterFunctionUrl", RegisterFunctionUrl)
+                    // Running the app from a package zip, already uploaded to Azure storage in the project pipeline.
+                    // If you create your own pipeline, see azure-pipelines.yml for an example how to do this.
+                    // See https://docs.microsoft.com/en-us/azure/app-service/deploy-run-package
+                    .WithAppSetting("WEBSITE_RUN_FROM_PACKAGE", "https://functionsandboxrepo.blob.core.windows.net/deploy/FunctionSandbox.Portal.zip")
                     .Create();
                 Console.WriteLine("done");
 
-
-                // Programatically deploy the webapp !!!!
-                // https://stackoverflow.com/questions/45034054/deploy-azure-function-from-code-c
-                // https://blog.dangl.me/archive/deploy-to-azure-app-service-with-no-downtime-by-using-staging-slots/
-                // https://gist.github.com/GeorgDangl/aac6b7ea1ce3fd578fc8bddc4de199ec
-                // 1. dotnet publish blah blah 
-                //      (How to do this from code???? Doesn't seem possible from Microsoft.Build.Evaluation or Microsoft.Build.Execution)
-                // 2. zip it somehow (System.IO.Compression.ZipFile?)
-                // 3. Deploy:
-                //      Maybe use WebApp.Deploy().WithPackageUri().Execute();
-                //      Since we've already created a storage account, we could shove the zip in a container there.
-                //      Or, maybe just deploy as a zip file. See https://docs.microsoft.com/en-us/azure/app-service/deploy-zip
-                //      Loops like you can post the zip to https://<app_name>.scm.azurewebsites.net/api/zipdeploy.
-                // Then create a access key at the start of this logic (commented out), use that key to form
-                // the register api url and add it when the WebApp is created intead of the code farther down 
-                // ("Updating WebApp settings..."). It must also be added to the function app with .AddFunctionKey()
-                // Should also programatically deploy the function app just to be complete.
-
-                // Install the app insites extension                
+                // Install the Application Insights extension                
                 // Not sure this is needed. 
                 // I've seen references that imply it is necessary for App Insights to track stuff automagically:
                 //   https://winterdom.com/2017/08/01/aiarm
@@ -191,6 +182,7 @@ namespace Provision
                 // and it throws a 400 there too.
                 // Interestingly, this "Microsoft.ApplicationInsights.AzureWebSites" extension does not appear when listing site extensions 
                 // for an existing web app. https://docs.microsoft.com/en-us/rest/api/appservice/webapps/listsiteextensions#code-try-0)
+                // Maybe it's been added as part of a standard web app in version ~3?
                 Console.Write($"Installing extension 'Microsoft.ApplicationInsights.AzureWebSites' on '{WebApp.Name}'... ");
                 try
                 {
@@ -237,6 +229,10 @@ namespace Provision
                     .WithExistingStorageAccount(FunctionStorageAccount)
                     .WithRuntimeVersion("~3")
                     .WithNetFrameworkVersion(NetFrameworkVersion.V4_6)
+                    // Running the app from a package zip, already uploaded to Azure storage in the project pipeline.
+                    // If you create your own pipeline, see azure-pipelines.yml for an example how to do this.
+                    // See https://docs.microsoft.com/en-us/azure/app-service/deploy-run-package
+                    .WithAppSetting("WEBSITE_RUN_FROM_PACKAGE", "https://functionsandboxrepo.blob.core.windows.net/deploy/FunctionSandbox.Functions.zip")
                     .WithAppSetting("AzureWebJobsStorage", FunctionStorageAccount.GetConnectionString())
                     .WithAppSetting("APPINSIGHTS_INSTRUMENTATIONKEY", FunctionAppInsights.Properties.InstrumentationKey)
                     .WithAppSetting("FUNCTIONS_WORKER_RUNTIME", "dotnet")
@@ -256,20 +252,24 @@ namespace Provision
                     .Create();
                 Console.WriteLine("done");
 
-                Console.Write($"Updating WebApp settings... ");
-                // Update the WebApp with a setting so it has the "Register function" URL.
-                // I'm not real thrilled about this. I'd rather add an appsetting with a pre-generated key
-                // to the WebApp at the same time I'm creating it, and then add that same key to the function
-                // in this function app using: 
-                //    FunctionApp.AddFunctionKey(functionName, keyName, keyValue)
-                // But to do that, the function would have to have already been deployed.
-                // Instead, we're using the master key... not a really secure thing.
-                var masterKey = FunctionApp.GetMasterKey();
-                RegisterFunctionUrl = $"https://{FunctionAppHostName}/api/register/?code={masterKey}";
-                WebApp.Update()
-                    .WithAppSetting("RegisterFunctionUrl", RegisterFunctionUrl)
-                    .Apply();
+                Console.Write($"Adding the function key to 'StartRegister'... ");
+                FunctionApp.AddFunctionKey("StartRegister", "PortalKey", functionApiKey);
                 Console.WriteLine("done");
+
+                // Console.Write($"Updating WebApp settings... ");
+                // // Update the WebApp with a setting so it has the "Register function" URL.
+                // // I'm not real thrilled about this. I'd rather add an appsetting with a pre-generated key
+                // // to the WebApp at the same time I'm creating it, and then add that same key to the function
+                // // in this function app using: 
+                // //    FunctionApp.AddFunctionKey(functionName, keyName, keyValue)
+                // // But to do that, the function would have to have already been deployed.
+                // // Instead, we're using the master key... not a really secure thing.
+                // var masterKey = FunctionApp.GetMasterKey();
+                // RegisterFunctionUrl = $"https://{FunctionAppHostName}/api/register/?code={masterKey}";
+                // WebApp.Update()
+                //     .WithAppSetting("RegisterFunctionUrl", RegisterFunctionUrl)
+                //     .Apply();
+                // Console.WriteLine("done");
             }
             catch (Exception ex)
             {

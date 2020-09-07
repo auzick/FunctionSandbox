@@ -12,7 +12,7 @@ pool:
 variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
+  buildConfiguration: 'Debug'
 
 steps:
 - task: NuGetToolInstaller@1
@@ -26,13 +26,12 @@ steps:
   inputs:
     command: 'publish'
     publishWebProjects: false
-    configuration: Release
+    configuration: 'Debug'
     zipAfterPublish: true
     projects: '**/FunctionSandbox.Functions.csproj'
     modifyOutputPath: true
     arguments: '-o $(Build.ArtifactStagingDirectory)/publish'
 
-# C:\Program Files\dotnet\dotnet.exe" publish D:\a\1\s\FunctionSandbox.Portal\FunctionSandbox.Portal.csproj -o D:\a\1\a\publish\FunctionSandbox.Portal
 - task: DotNetCoreCLI@2
   displayName: "Publish portal app"
   inputs:
@@ -45,6 +44,7 @@ steps:
     arguments: '-o $(Build.ArtifactStagingDirectory)/publish'
 
 - task: AzureFileCopy@4
+  displayName: "Copy deployment zips to Azure storage"
   inputs:
     sourcePath: '$(build.artifactStagingDirectory)/publish/*'
     azureSubscription: 'Azure Function Sandbox'
