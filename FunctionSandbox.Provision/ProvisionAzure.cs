@@ -109,8 +109,7 @@ namespace Provision
             }
             string functionApiKey = Convert.ToBase64String(key);
 
-            // https://autest-x-functions.azurewebsites.net
-            RegisterFunctionUrl = $"https://{Name}-functions/api/register/?code={functionApiKey}";
+            RegisterFunctionUrl = $"https://{Name}-functions.azurewebsites.net/api/register/?code={functionApiKey}";
 
             Console.Write($"Creating resource group '{Name}'... ");
             ResourceGroup = azure.ResourceGroups
