@@ -29,7 +29,7 @@ When you run this app (`dotnet run --project FunctionSandbox.Provision/FunctionS
 - **Email from address:** The "from" address to use when sending emails
 - **Write config files?:** Do you want the app yo update your appsettings.Development.config and local.settings.config files? 
 
-If all goes to plan, the app will now create a new Azure resource group, populate it with all the resources you need (using an F1 free app service plan), and populate all the configuration settings on the WebApp and FunctionApp. Pre-built zip deploy package (created from this project's dev-ops pipeline) will be deployed to the function app and the web portals. If you cerate a different repo/pipeline, you can trigger azure-pipelines on check-in.
+If all goes to plan, the app will now create a new Azure resource group, populate it with all the resources you need (using an F1 free app service plan), and populate all the configuration settings on the WebApp and FunctionApp. Pre-built zip deploy package (created from this project's dev-ops pipeline) will be deployed to the function app and the web portals. If you cerate a different repo/pipeline, you can trigger azure-pipelines.yml on check-in.
 
 The app will save your answers to the file `provisionSettings.json` to supply defaults for next time, or you can just use the values in the file by using the `--quiet` switch. Note: The  **Write config files** preference is purposely not saved in your provisioning settings file. If running "quietly", supply the `--writeConfigs` switch to force it to re-write your config file.
 
