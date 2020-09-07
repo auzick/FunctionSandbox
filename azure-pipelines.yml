@@ -28,11 +28,12 @@ steps:
   displayName: "publish portal app"
   inputs:
     command: 'publish'
-    publishWebProjects: false
+    publishWebProjects: true
     configuration: Release
     zipAfterPublish: true
     projects: '**/FunctionSandbox.Portal.csproj'
     modifyOutputPath: true
+    arguments: '-o $(Build.ArtifactStagingDirectory)/publish'
 
 
 #- task: VSBuild@1
@@ -44,7 +45,7 @@ steps:
 
 - task: AzureFileCopy@4
   inputs:
-    sourcePath: '$(build.artifactStagingDirectory)\WebApp.zip'
+    sourcePath: '$(build.artifactStagingDirectory)/publish/*'
     azureSubscription: 'Azure Function Sandbox'
     destination: 'AzureBlob'
     storage: 'functionsandboxrepo'
