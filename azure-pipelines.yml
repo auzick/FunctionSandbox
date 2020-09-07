@@ -11,8 +11,6 @@ pool:
 
 variables:
   solution: '**/*.sln'
-  portalProj: '**/FunctionSandbox.Portal/FunctionSandbox.Portal.csproj'
-  functionsProj: '**/FunctionSandbox.Functions/FunctionSandbox.Functions.csproj'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
@@ -25,7 +23,7 @@ steps:
 
 # dotnet publish ./FunctionSandbox.Portal/FunctionSandbox.Portal.csproj -c Release -o ./FunctionSandbox.Portal/publish
 - task: DotNetCoreCLI@2
-  displayName: "publish portal app"
+  displayName: "Publish portal app"
   inputs:
     command: 'publish'
     publishWebProjects: true
@@ -35,13 +33,17 @@ steps:
     modifyOutputPath: true
     arguments: '-o $(Build.ArtifactStagingDirectory)/publish'
 
-
-#- task: VSBuild@1
-#  inputs:
-#    solution: '$(portalProj)'
-#    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
-#    platform: '$(buildPlatform)'
-#    configuration: '$(buildConfiguration)'
+# dotnet publish ./FunctionSandbox.Portal/FunctionSandbox.Portal.csproj -c Release -o ./FunctionSandbox.Portal/publish
+- task: DotNetCoreCLI@2
+  displayName: "Publish functions app"
+  inputs:
+    command: 'publish'
+    publishWebProjects: true
+    configuration: Release
+    zipAfterPublish: true
+    projects: '**/FunctionSandbox.Functions.csproj'
+    modifyOutputPath: true
+    arguments: '-o $(Build.ArtifactStagingDirectory)/publish'
 
 - task: AzureFileCopy@4
   inputs:
@@ -51,8 +53,7 @@ steps:
     storage: 'functionsandboxrepo'
     ContainerName: 'deploy'
 
-
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+#- task: VSTest@2
+#  inputs:
+#    platform: '$(buildPlatform)'
+#    configuration: '$(buildConfiguration)'
