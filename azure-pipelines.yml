@@ -28,7 +28,7 @@ steps:
     publishWebProjects: true
     configuration: Release
     zipAfterPublish: true
-    projects: '**/*.csproj'
+    projects: '**/**.csproj'
     modifyOutputPath: true
     arguments: '-o $(Build.ArtifactStagingDirectory)/publish'
 
