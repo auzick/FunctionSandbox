@@ -31,12 +31,11 @@ steps:
 
 - task: AzureFileCopy@4
   inputs:
-    azureSubscription: 'ea5c248c-8bf3-4227-97b4-cae0fd91c429'
-    SourcePath: '$(build.artifactStagingDirectory)\WebApp.zip'
-    Destination: 'AzureBlob'
+    sourcePath: '$(build.artifactStagingDirectory)\WebApp.zip'
+    azureSubscription: 'Azure Function Sandbox'
+    destination: 'AzureBlob'
     storage: 'functionsandboxrepo'
     ContainerName: 'deploy'
-    BlobPrefix: 'webapp'
 
 - task: VSTest@2
   inputs:
