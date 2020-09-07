@@ -25,13 +25,15 @@ steps:
 
 # dotnet publish ./FunctionSandbox.Portal/FunctionSandbox.Portal.csproj -c Release -o ./FunctionSandbox.Portal/publish
 - task: DotNetCoreCLI@2
+  displayName: "publish portal app"
   inputs:
     command: 'publish'
-    publishWebProjects: true
+    publishWebProjects: false
     configuration: Release
-    modifyOutputPath: '$(build.artifactStagingDirectory)\WebApp.zip'
     zipAfterPublish: true
     workingDirectory: '$(portalProj)'
+    projects: '($functionsProj)'
+    modifyOutputPath: true
 
 
 #- task: VSBuild@1
