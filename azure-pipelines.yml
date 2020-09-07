@@ -21,7 +21,6 @@ steps:
 #  inputs:
 #    restoreSolution: '$(solution)'
 
-# dotnet publish ./FunctionSandbox.Portal/FunctionSandbox.Portal.csproj -c Release -o ./FunctionSandbox.Portal/publish
 - task: DotNetCoreCLI@2
   displayName: "Publish portal app"
   inputs:
@@ -33,7 +32,6 @@ steps:
     modifyOutputPath: true
     arguments: '-o $(Build.ArtifactStagingDirectory)/publish'
 
-# dotnet publish ./FunctionSandbox.Portal/FunctionSandbox.Portal.csproj -c Release -o ./FunctionSandbox.Portal/publish
 - task: DotNetCoreCLI@2
   displayName: "Publish functions app"
   inputs:
