@@ -12,22 +12,35 @@ pool:
 variables:
   solution: '**/*.sln'
   portalProj: '**/FunctionSandbox.Portal/FunctionSandbox.Portal.csproj'
+  functionsProj: '**/FunctionSandbox.Functions/FunctionSandbox.Functions.csproj'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
 steps:
 - task: NuGetToolInstaller@1
 
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
+#- task: NuGetCommand@2
+#  inputs:
+#    restoreSolution: '$(solution)'
 
-- task: VSBuild@1
+# dotnet publish ./FunctionSandbox.Portal/FunctionSandbox.Portal.csproj -c Release -o ./FunctionSandbox.Portal/publish
+- task: DotNetCoreCLI@2
   inputs:
-    solution: '$(portalProj)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    command: 'publish'
+    publishWebProjects: true
+    arguments: 'sdvfsdf'
+    configuration: Release
+    modifyOutputPath: '$(build.artifactStagingDirectory)\WebApp.zip'
+    zipAfterPublish: true
+    workingDirectory: '$(portalProj)'
+    
+
+-# task: VSBuild@1
+ # inputs:
+ #   solution: '$(portalProj)'
+ #   msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
+ #   platform: '$(buildPlatform)'
+ #   configuration: '$(buildConfiguration)'
 
 - task: AzureFileCopy@4
   inputs:
@@ -36,6 +49,7 @@ steps:
     destination: 'AzureBlob'
     storage: 'functionsandboxrepo'
     ContainerName: 'deploy'
+
 
 - task: VSTest@2
   inputs:
