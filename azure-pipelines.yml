@@ -22,26 +22,27 @@ steps:
 #    restoreSolution: '$(solution)'
 
 - task: DotNetCoreCLI@2
-  displayName: "Publish"
+  displayName: "Publish functions app"
+  inputs:
+    command: 'publish'
+    publishWebProjects: false
+    configuration: Release
+    zipAfterPublish: true
+    projects: '**/FunctionSandbox.Functions.csproj'
+    modifyOutputPath: true
+    arguments: '-o $(Build.ArtifactStagingDirectory)/publish'
+
+# C:\Program Files\dotnet\dotnet.exe" publish D:\a\1\s\FunctionSandbox.Portal\FunctionSandbox.Portal.csproj -o D:\a\1\a\publish\FunctionSandbox.Portal
+- task: DotNetCoreCLI@2
+  displayName: "Publish portal app"
   inputs:
     command: 'publish'
     publishWebProjects: true
     configuration: Release
     zipAfterPublish: true
-    projects: '**/**.csproj'
+    projects: '**/FunctionSandbox.Portal.csproj'
     modifyOutputPath: true
     arguments: '-o $(Build.ArtifactStagingDirectory)/publish'
-
-#- task: DotNetCoreCLI@2
-#  displayName: "Publish functions app"
-#  inputs:
-#    command: 'publish'
-#    publishWebProjects: true
-#    configuration: Release
-#    zipAfterPublish: true
-#    projects: '**/FunctionSandbox.Functions.csproj'
-#    modifyOutputPath: true
-#    arguments: '-o $(Build.ArtifactStagingDirectory)/publish'
 
 - task: AzureFileCopy@4
   inputs:
