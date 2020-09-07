@@ -31,7 +31,7 @@ steps:
     publishWebProjects: false
     configuration: Release
     zipAfterPublish: true
-    projects: '($functionsProj)'
+    projects: '**/FunctionSandbox.Portal.csproj'
     modifyOutputPath: true
 
 
